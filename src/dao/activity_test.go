@@ -6,6 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
 	"pojo/model"
+	"os"
 )
 func TestNewActiveDao(t *testing.T) {
 	var db *gorm.DB
@@ -30,4 +31,5 @@ func TestActivetyDao_InsterActivity(t *testing.T) {
 	result ,err:= dao.InsterActivity(activity)
 	assert.Equal(t,err,nil)
 	assert.Equal(t,result,int64(1))
+	os.Remove("unit_test_gorm.db")
 }
