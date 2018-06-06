@@ -2,18 +2,32 @@ package dao
 
 import (
 	"github.com/jinzhu/gorm"
+	"pojo/model"
 )
 
-// 新闻数据访库问对象
-type New struct {
-	gorm.Model
-	Title   string `gorm:"column:title"`   // 标题
-	Content string `gorm:"column:content"` // 内容
-	Img     string `gorm:"column:img"`     // 图片
+// 新闻需要访问数据库的对象
+type NewsDao struct {
+	db *gorm.DB
 }
 
-// 定义新闻表名
-func (New) TableName() string {
+// 构造NewsDao需要传入数据库的对象
+func NewNewsDao(db *gorm.DB) *NewsDao {
+	return &NewsDao{
+		db: db,
+	}
+}
 
-	return "shop_news"
+// 添加新闻信息
+func (this *NewsDao) InsertNews(news *model.News) (int64, error) {
+	// 把新闻信息插入数据库 返回一个信息
+	result := this.db.Save(news)
+
+	// 判断是否有错误信息
+	if result.Error != nil {
+		// 保存出错了
+		return 0, result.Error
+	}
+
+	// 成功返回 行数
+	return result.RowsAffected, nil
 }
