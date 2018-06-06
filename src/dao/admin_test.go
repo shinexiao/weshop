@@ -7,6 +7,7 @@ import (
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
 	"pojo/model"
+	"os"
 )
 
 // 单元测试，测试AdminDao对象的构造
@@ -22,7 +23,7 @@ func TestNewAdminDao(t *testing.T) {
 // 单元测试，测试保存Admin对象
 func TestAdminDao_InsertAdmin(t *testing.T) {
 
-	db, _ := gorm.Open("sqlite3", "/tmp/gorm.db")
+	db, _ := gorm.Open("sqlite3", "unit_test_gorm.db")
 	// 创建数据库表
 	db.CreateTable(model.Admin{})
 
@@ -39,5 +40,7 @@ func TestAdminDao_InsertAdmin(t *testing.T) {
 
 	assert.Equal(t, err, nil)
 	assert.Equal(t, result, int64(1))
+
+	os.Remove("unit_test_gorm.db")
 
 }
