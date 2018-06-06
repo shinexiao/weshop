@@ -1,11 +1,11 @@
-package dao
+package model
 
 import (
 	"github.com/jinzhu/gorm"
 )
 
 // 订单明细模型
-type OrderDetail struct {
+type OrderItem struct {
 	gorm.Model
 	OrderId      uint    `gorm:"Column:order_id;NOT NULL"`      //订单id
 	GoodsId      uint    `gorm:"Column:goods_id;NOT NULL"`      //商品id
@@ -16,6 +16,6 @@ type OrderDetail struct {
 }
 
 // 返回表名
-func (OrderDetail) TableName() string {
-	return "shop_order_detail"
+func (OrderItem) TableName() string {
+	return "shop_order_item"
 }

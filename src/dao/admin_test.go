@@ -26,6 +26,7 @@ func TestAdminDao_InsertAdmin(t *testing.T) {
 	// 创建数据库表
 	db.CreateTable(model.Admin{})
 
+	//单元测试， 覆盖正确逻辑
 	admin := &model.Admin{
 		Username: "xiaoka",
 		Password: "xxxx111111",
@@ -35,11 +36,21 @@ func TestAdminDao_InsertAdmin(t *testing.T) {
 
 	result, err := adminDao.InsertAdmin(admin)
 
-	db.Close()
-
 	assert.Equal(t, err, nil)
 	assert.Equal(t, result, int64(1))
 
+	// 单元测试，覆盖错误逻辑
+	admin = &model.Admin{
+		Username: "xiaoka",
+		Password: "xxx22222",
+	}
+
+	_ , err = adminDao.InsertAdmin(admin)
+	assert.NotEqual(t, err, nil)
+
+	db.Close()
+
+	// 清理数据库，以备下次使用
 	os.Remove("unit_test_gorm.db")
 
 }

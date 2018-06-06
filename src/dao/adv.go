@@ -1,15 +1,34 @@
 package dao
 
-import "github.com/jinzhu/gorm"
+import (
+	"github.com/jinzhu/gorm"
+	"pojo/model"
+)
 
-// 广告数据库访问
-type Adv struct {
-	gorm.Model
-	Img     string `gorm:"column:img;not null"` // 图片
-	Url     string `gorm:"column:url"`          // 连接
-	Content string `gorm:"column:content"`      // 文本
+// 广告需要访问数据库
+type AdvDao struct {
+	db *gorm.DB
 }
 
-func (Adv) TableName() string {
-	return "shop_adv"
+// 构造一个广告访问数据库的对象
+func NewAdvDao(db *gorm.DB) *AdvDao {
+	// 返回一个对象
+	return &AdvDao{
+		db: db,
+	}
+}
+
+// 保存 广告信息
+func (this *AdvDao) InsertAdv(adv *model.Adv) (int64, error) {
+	// 往数据库插入广告信息  返回一个结果
+	result := this.db.Save(adv)
+
+	// 判断是否是错误信息
+	if result.Error != nil {
+		// 错误了
+		return 0, result.Error
+	}
+
+	// 正确的话 返回正确条数
+	return result.RowsAffected, nil
 }
