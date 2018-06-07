@@ -40,25 +40,14 @@ func TestAdvDao_InsertAdv(t *testing.T) {
 	// 把adv实例 保存入数据库
 	result, err := advDao.InsertAdv(adv)
 
+	// 关闭数据库
+	db.Close()
+
 	// 断言 错误信息
 	assert.Equal(t, err, nil)
 
 	// 断言 正确信息
 	assert.Equal(t, result, int64(1))
-
-	adv = &model.Adv{
-		Img: "图片",
-		Url: "地址",
-	}
-
-	// 把重复的adv实例 保存入数据库 测试保存
-	_, err = advDao.InsertAdv(adv)
-
-	// 断言 错误信息
-	assert.Equal(t, err, nil)
-
-	// 关闭数据库
-	db.Close()
 
 	os.Remove("adv_test_gorm.db")
 }
