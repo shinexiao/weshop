@@ -1,8 +1,9 @@
 package dao
 
 import (
-	"github.com/jinzhu/gorm"
 	"pojo/model"
+
+	"github.com/jinzhu/gorm"
 )
 
 // 管理员数据库访问对象
@@ -29,4 +30,19 @@ func (this *AdminDao) InsertAdmin(admin *model.Admin) (int64, error) {
 	}
 
 	return result.RowsAffected, nil
+}
+
+// 根据用户名查询管理员
+func (this *AdminDao) GetAdmin(username string) (*model.Admin, error) {
+
+	admin := &model.Admin{}
+
+	result := this.db.Find(admin, "username = ?", username)
+
+	if result.Error != nil {
+
+		return nil, result.Error
+	}
+
+	return admin, nil
 }

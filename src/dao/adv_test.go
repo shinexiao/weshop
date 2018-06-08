@@ -5,6 +5,7 @@ import (
 	"github.com/jinzhu/gorm"
 	"github.com/stretchr/testify/assert"
 	"pojo/model"
+	"os"
 )
 
 // 单元测试，测试advDao对象的构造
@@ -22,7 +23,7 @@ func TestNewAdvDao(t *testing.T) {
 // 单元测试，测试保存adv对象
 func TestAdvDao_InsertAdv(t *testing.T) {
 	// 连接数据库
-	db, _ := gorm.Open("sqlite3", "/tmp/gorm.db")
+	db, _ := gorm.Open("sqlite3", "adv_test_gorm.db")
 
 	// 创建数据库表
 	db.CreateTable(model.Adv{})
@@ -47,4 +48,6 @@ func TestAdvDao_InsertAdv(t *testing.T) {
 
 	// 断言 正确信息
 	assert.Equal(t, result, int64(1))
+
+	os.Remove("adv_test_gorm.db")
 }
