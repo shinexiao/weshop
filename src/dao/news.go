@@ -73,3 +73,12 @@ func (this *NewsDao) PutNews(news *model.News, id int64) (int64, error) {
 	}
 	return result.RowsAffected, nil
 }
+
+// 删除 新闻
+func (this *NewsDao) DeleteNews(id int64) (int64, error) {
+	result := this.db.Table("shop_news").Where("id = ?", id).Delete(&model.News{})
+	if result.Error != nil {
+		return 0, result.Error
+	}
+	return result.RowsAffected, nil
+}

@@ -32,3 +32,13 @@ func (this *AdvDao) InsertAdv(adv *model.Adv) (int64, error) {
 	// 正确的话 返回正确条数
 	return result.RowsAffected, nil
 }
+
+// 分页查询 广告
+func (this *AdvDao) GetAdvs( page, limit int32) ([] *model.Adv, error) {
+	advs := make([] *model.Adv, limit)
+	result := this.db.Limit(limit).Offset((page - 1) * limit).Find(&advs)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return advs, nil
+}

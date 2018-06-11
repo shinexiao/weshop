@@ -6,6 +6,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"pojo/model"
 	"os"
+	"fmt"
+	"strconv"
 )
 
 // 单元测试，测试advDao对象的构造
@@ -50,4 +52,35 @@ func TestAdvDao_InsertAdv(t *testing.T) {
 	assert.Equal(t, result, int64(1))
 
 	os.Remove("adv_test_gorm.db")
+}
+
+// 单元测试，分页查询 adv 对象
+func TestAdvDao_GetAdvs(t *testing.T) {
+	// 连接数据库
+	db, _ := gorm.Open("sqlite3", "adv_test_gorm.db")
+
+	//删除数据库表
+	defer os.Remove("adv_test_gorm.db")
+
+	//关闭数据库表
+	defer db.Close()
+
+	// 创建数据库表
+	db.CreateTable(model.Adv{})
+
+	advDao := NewAdvDao(db)
+
+	for i := 0; i < 30; i++ {
+		index := strconv.Itoa(i)
+		adv := &model.Adv{
+			Img: index + "广告图片",
+			Url: index + "广告连接",
+		}
+		result, err := advDao.InsertAdv(adv)
+		assert.Nil(t, err)
+		assert.Equal(t, result, int64(1))
+	}
+	advList := make([] *model.Adv, 20)
+	advList, _ = advDao.GetAdvs(1, 20)
+	fmt.Print(advList[3])
 }

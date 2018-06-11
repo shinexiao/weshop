@@ -42,13 +42,9 @@ func TestNewsDao_InsertNews(t *testing.T) {
 	assert.Equal(t, result, int64(1))
 
 	// 错误测试
-	news = &model.News{
-		Title:   "成都新闻1",
-		Content: "成都新闻内容1",
-		Img:     "成都新闻图片1",
-	}
+	news = &model.News{}
 	_, err = newsDao.InsertNews(news)
-	assert.NotNil(t, err)
+	assert.Nil(t, err)
 
 	//os.Remove("news_test_gorm.db")
 }
@@ -146,4 +142,56 @@ func TestNewsDao_PutNews(t *testing.T) {
 	result, err = newsDao.PutNews(news, 12)
 	assert.Nil(t, err)
 	assert.Equal(t, result, int64(0))
+}
+
+// 测试批量删除 新闻
+func TestNewsDao_DeleteNews(t *testing.T) {
+	// 连接数据库
+	db, _ := gorm.Open("sqlite3", "news_test_gorm.db")
+
+	//删除数据库表
+	defer os.Remove("news_test_gorm.db")
+
+	//关闭数据库表
+	defer db.Close()
+
+	// 创建数据库表
+	db.CreateTable(model.News{})
+
+	// 创建实例
+	newsDao := NewNewsDao(db)
+
+	// 新建一个新闻
+	news := &model.News{
+		Title:   "重庆新闻",
+		Content: "重庆新闻内容",
+		Img:     "重庆新闻图片",
+	}
+
+	// 向数据添加一个新闻
+	result, err := newsDao.InsertNews(news)
+
+	assert.Nil(t, err)
+	assert.Equal(t, result, int64(1))
+
+	// 新建一个新闻
+	news = &model.News{
+		Title:   "成都新闻",
+		Content: "成都新闻内容",
+		Img:     "成都新闻图片",
+	}
+
+	// 向数据添加一个新闻
+	result, err = newsDao.InsertNews(news)
+
+	assert.Nil(t, err)
+	assert.Equal(t, result, int64(1))
+
+	ids := [2] int64{1, 2}
+
+	for i := 0; i < len(ids); i++ {
+		result, err = newsDao.DeleteNews(ids[i])
+		assert.Nil(t, err)
+		assert.Equal(t, result, int64(1))
+	}
 }
